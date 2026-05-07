@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadwal Sidang – Komisi Informasi Provinsi Jambi</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f2ee;
+    --surface: #ffffff;
+    --surface-alt: #faf9f7;
+    --border: #e0dbd2;
+    --accent: #1a3d2b;
+    --accent-light: #e6efe9;
+    --accent-mid: #2e6647;
+    --gold: #c09a3a;
+    --gold-light: #faf5e4;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5a5a5a;
+    --text-muted: #9a9a9a;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── TOP BAR (instansi strip) ── */
+  .top-bar {
+    background: var(--accent);
+    border-bottom: 2px solid var(--gold);
+    padding: 0;
+  }
+
+  .top-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 80px;
+  }
+
+  /* Garuda SVG Logo */
+  .garuda-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .garuda-wrap img,
+  .garuda-wrap svg {
+    width: 70px;
+    height: 70px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+  }
+
+  .divider-line {
+    width: 1.5px;
+    height: 52px;
+    background: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+  }
+
+  .header-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .header-identity .lembaga {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(10px, 2vw, 12px);
+    font-weight: 400;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .header-identity h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(15px, 3.5vw, 22px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+  }
+
+  .header-identity .provinsi {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(11px, 2vw, 14px);
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── STICKY NAV BAR ── */
+  .nav-bar {
+    background: #132e1f;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+
+  .nav-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 44px;
+  }
+
+  .nav-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-label strong {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  /* ── HERO STRIP ── */
+  .hero-strip {
+    background: linear-gradient(135deg, #1a3d2b 0%, #2e6647 60%, #3a7a57 100%);
+    padding: 36px 24px;
+    text-align: center;
+    color: #fff;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  .hero-strip h2 {
+    font-family: 'Lora', serif;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .hero-strip p {
+    font-size: 13px;
+    opacity: 0.8;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── SEARCH + STATS BAR ── */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .search-wrap {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--accent-mid);
+    box-shadow: 0 0 0 3px rgba(46,102,71,0.12);
+  }
+
+  .search-wrap input::placeholder { color: var(--text-muted); }
+
+  .stats-badge {
+    background: var(--gold-light);
+    border: 1.5px solid #e8d89a;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── FILTER TABS ── */
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .tab-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover { border-color: var(--accent-mid); color: var(--accent); }
+
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-mid);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-top {
+    background: linear-gradient(135deg, var(--accent-light), #edf4ef);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-register {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.3;
+  }
+
+  .card-register small {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .agenda-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+
+  .badge-ajudikasi  { background: #e8f0fe; color: #2563eb; }
+  .badge-mediasi    { background: #fef3c7; color: #d97706; }
+  .badge-putusan    { background: #fce7f3; color: #db2777; }
+  .badge-lainnya    { background: #f0fdf4; color: #16a34a; }
+
+  .card-body { padding: 16px 20px; }
+
+  .card-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 9px;
+    font-size: 13.5px;
+  }
+
+  .card-row:last-child { margin-bottom: 0; }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    min-width: 84px;
+    flex-shrink: 0;
+  }
+
+  .card-value { color: var(--text-primary); font-weight: 400; }
+
+  .card-footer {
+    background: var(--surface-alt);
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-datetime {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .card-cta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-mid);
+    white-space: nowrap;
+  }
+
+  /* ── LOADING / ERROR / EMPTY STATES ── */
+  .state-box {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+  }
+
+  .state-box svg { margin: 0 auto 16px; display: block; opacity: 0.4; }
+  .state-box p   { font-size: 15px; }
+  .state-box .state-sub { font-size: 13px; margin-top: 6px; color: var(--text-muted); }
+
+  /* Loading spinner */
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent-mid);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .state-error p { color: #dc2626; }
+  .state-error .retry-btn {
+    margin-top: 14px;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .state-error .retry-btn:hover { background: var(--accent-mid); }
+
+  /* ── LAST REFRESH INFO ── */
+  .refresh-info {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── CONTACT SECTION ── */
+  .contact-section {
+    margin-top: 52px;
+    padding-top: 40px;
+    border-top: 1.5px solid var(--border);
+  }
+
+  .contact-title {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .contact-card:hover { border-color: var(--accent-mid); box-shadow: var(--shadow-sm); }
+
+  .contact-avatar {
+    width: 40px; height: 40px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .contact-role {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .contact-name { font-size: 14px; font-weight: 600; color: var(--accent); }
+  .contact-phone { font-size: 13px; color: var(--text-secondary); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    max-width: 640px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.28s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%);
+    padding: 24px 28px;
+    color: #fff;
+    position: relative;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .modal-header h3 {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .modal-header p { font-size: 13px; opacity: 0.8; }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .modal-close:hover { background: rgba(255,255,255,0.28); }
+
+  .modal-body { padding: 28px; }
+
+  .modal-section { margin-bottom: 28px; }
+  .modal-section:last-child { margin-bottom: 0; }
+
+  .modal-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .detail-item label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .detail-item p {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+
+  .detail-item.full { grid-column: 1 / -1; }
+
+  .catatan-box {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-style: italic;
+    min-height: 48px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    padding: 20px;
+    font-size: 12.5px;
+    border-top: 2px solid var(--gold);
+    letter-spacing: 0.03em;
+  }
+
+  footer strong { color: #fff; font-weight: 600; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .top-bar-inner { gap: 12px; min-height: 66px; }
+    .garuda-wrap svg { width: 50px; height: 50px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .modal-body { padding: 20px; }
+    .modal-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="garuda-wrap">
+      <!-- Garuda Pancasila SVG (simplified) -->
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <ellipse cx="60" cy="60" rx="52" ry="52" fill="#c09a3a" opacity="0.18"/>
+        <!-- Eagle body -->
+        <ellipse cx="60" cy="66" rx="18" ry="22" fill="#f5c842"/>
+        <!-- Head -->
+        <circle cx="60" cy="38" r="12" fill="#f5c842"/>
+        <!-- Beak -->
+        <polygon points="60,46 55,52 65,52" fill="#e67c00"/>
+        <!-- Eye -->
+        <circle cx="56" cy="36" r="2.5" fill="#1a1a1a"/>
+        <!-- Wings left -->
+        <ellipse cx="30" cy="60" rx="22" ry="10" fill="#f5c842" transform="rotate(-30 30 60)"/>
+        <!-- Wings right -->
+        <ellipse cx="90" cy="60" rx="22" ry="10" fill="#f5c842" transform="rotate(30 90 60)"/>
+        <!-- Shield -->
+        <rect x="50" y="60" width="20" height="24" rx="3" fill="#1a3d2b"/>
+        <line x1="60" y1="60" x2="60" y2="84" stroke="#f5c842" stroke-width="1.5"/>
+        <line x1="50" y1="72" x2="70" y2="72" stroke="#f5c842" stroke-width="1.5"/>
+        <!-- Tail -->
+        <ellipse cx="60" cy="90" rx="14" ry="6" fill="#f5c842"/>
+        <!-- Claws holding ribbon -->
+        <rect x="44" y="90" width="32" height="7" rx="3" fill="#e67c00"/>
+        <text x="60" y="97" text-anchor="middle" fill="#fff" font-size="4" font-weight="bold">BHINNEKA TUNGGAL IKA</text>
+      </svg>
+    </div>
+
+    <div class="divider-line"></div>
+
+    <div class="header-identity">
+      <span class="lembaga">Republik Indonesia</span>
+      <h1>KOMISI INFORMASI</h1>
+      <span class="provinsi">Provinsi Jambi</span>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY NAV BAR -->
+<div class="nav-bar">
+  <div class="nav-bar-inner">
+    <span class="nav-label"><strong>Sistem Informasi Jadwal Persidangan</strong> &nbsp;·&nbsp; Komisi Informasi Provinsi Jambi</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero-strip">
+  <h2>Jadwal Sidang Komisi Informasi</h2>
+  <p>Provinsi Jambi – Tahun 2026</p>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Cari nomor register, pemohon, termohon…" oninput="filterCards()">
+    </div>
+    <div class="stats-badge" id="statsLabel">Memuat data…</div>
+  </div>
+
+  <!-- FILTER TABS -->
+  <div class="filter-tabs">
+    <button class="tab-btn active" onclick="setFilter('all', this)">Semua</button>
+    <button class="tab-btn" onclick="setFilter('AJUDIKASI', this)">Ajudikasi</button>
+    <button class="tab-btn" onclick="setFilter('MEDIASI', this)">Mediasi</button>
+    <button class="tab-btn" onclick="setFilter('PUTUSAN', this)">Putusan</button>
+  </div>
+
+  <!-- REFRESH INFO -->
+  <div class="refresh-info" id="refreshInfo"></div>
+
+  <!-- CARD GRID -->
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- CONTACT -->
+  <div class="contact-section">
+    <div class="contact-title">Kontak Admin Persidangan</div>
+    <div class="contact-grid">
+      <a href="https://wa.me/6285789477932" class="contact-card" target="_blank">
+        <div class="contact-avatar">👤</div>
+        <div class="contact-info">
+          <div class="contact-role">Panitera Pengganti</div>
+          <div class="contact-name">Darul Akbar</div>
+          <div class="contact-phone">0857-8947-7932</div>
+        </div>
+      </a>
+      <a href="https://wa.me/6285366781849" class="contact-card" target="_blank">
+        <div class="contact-avatar">👤</div>
+        <div class="contact-info">
+          <div class="contact-role">Petugas</div>
+          <div class="contact-name">Zaimardi</div>
+          <div class="contact-phone">0853-6678-1849</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <h3 id="m-register">–</h3>
+      <p id="m-agenda-header">–</p>
+      <button class="modal-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="modal-section-title">Waktu Sidang</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Tanggal Sidang</label>
+            <p id="m-tanggal">–</p>
+          </div>
+          <div class="detail-item">
+            <label>Jam Sidang</label>
+            <p id="m-jam">–</p>
+          </div>
+          <div class="detail-item">
+            <label>Agenda Sidang</label>
+            <p id="m-agenda">–</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Para Pihak</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Nama Pemohon</label>
+            <p id="m-pemohon">–</p>
+          </div>
+          <div class="detail-item">
+            <label>Nama Termohon</label>
+            <p id="m-termohon">–</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Petugas Persidangan</div>
+        <div class="detail-grid">
+          <div class="detail-item full">
+            <label>Nama Majelis</label>
+            <p id="m-majelis">–</p>
+          </div>
+          <div class="detail-item">
+            <label>Nama Mediator</label>
+            <p id="m-mediator">–</p>
+          </div>
+          <div class="detail-item">
+            <label>Nama Panitera</label>
+            <p id="m-panitera">–</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Catatan Sidang</div>
+        <div class="catatan-box">
+          <p id="m-catatan">–</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Komisi Informasi Provinsi Jambi</strong> &nbsp;·&nbsp; Sistem Informasi Jadwal Persidangan &nbsp;·&nbsp; © 2026
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  ⚙️  KONFIGURASI – Ganti SHEET_ID sesuai Google Sheets Anda
+// ════════════════════════════════════════════════════════════
+const SHEET_ID   = '1dvXT87bMIjlsbi6C1B_7aZNpx8YW4j8t6DPZK3ryb54/edit?gid=0#gid=0';   // ← Ganti dengan Sheet ID Anda
+const SHEET_NAME = 'Sheet1';                   // ← Nama tab/sheet
+const AUTO_REFRESH_MINUTES = 5;               // ← Interval auto-refresh (menit)
+// ════════════════════════════════════════════════════════════
+
+// URL export CSV publik dari Google Sheets
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+// State aplikasi
+let sidangData  = [];
+let activeFilter = 'all';
+
+// ── PARSER CSV LENGKAP (mendukung field multi-baris & quoted) ──
+function parseCSV(text) {
+  const rows = [];
+  let row   = [];
+  let field = '';
+  let inQ   = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch   = text[i];
+    const next = text[i + 1];
+
+    if (inQ) {
+      if (ch === '"' && next === '"') { field += '"'; i++; }
+      else if (ch === '"')            { inQ = false; }
+      else                            { field += ch; }
+    } else {
+      if      (ch === '"')  { inQ = true; }
+      else if (ch === ',')  { row.push(field.trim()); field = ''; }
+      else if (ch === '\r' && next === '\n') { /* skip \r */ }
+      else if (ch === '\n' || ch === '\r') {
+        row.push(field.trim());
+        if (row.some(c => c !== '')) rows.push(row); // skip fully empty rows
+        row   = [];
+        field = '';
+      } else { field += ch; }
+    }
+  }
+  // flush sisa
+  if (field !== '' || row.length > 0) {
+    row.push(field.trim());
+    if (row.some(c => c !== '')) rows.push(row);
+  }
+  return rows;
+}
+
+// ── TEMUKAN BARIS HEADER ──
+function findHeaderRow(rows) {
+  for (let i = 0; i < rows.length; i++) {
+    const upper = rows[i].map(c => c.toUpperCase());
+    if (upper.includes('NOMOR REGISTER') || upper.some(c => c.includes('NOMOR REGISTER'))) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// ── MAPPING KOLOM CSV → OBJEK DATA ──
+function mapRow(row, headers) {
+  // Cari index kolom berdasarkan nama header (case-insensitive, partial match)
+  const col = (keyword) => {
+    const idx = headers.findIndex(h => h.toUpperCase().includes(keyword.toUpperCase()));
+    return idx >= 0 ? (row[idx] || '').trim() : '';
+  };
+
+  return {
+    register : col('NOMOR REGISTER'),
+    tanggal  : col('TANGGAL SIDANG'),
+    jam      : col('JAM SIDANG'),
+    pemohon  : col('NAMA PEMOHON'),
+    termohon : col('NAMA TERMOHON'),
+    majelis  : col('NAMA MAJELIS'),
+    mediator : col('NAMA MEDIATOR'),
+    panitera : col('NAMA PANITERA'),
+    agenda   : col('AGENDA SIDANG'),
+    catatan  : col('CATATAN SIDANG'),
+  };
+}
+
+// ── PROPAGASI TANGGAL (carry-forward jika baris kosong) ──
+function propagateTanggal(data) {
+  let lastTanggal = '';
+  return data.map(d => {
+    if (d.tanggal) lastTanggal = d.tanggal;
+    return { ...d, tanggal: lastTanggal || d.tanggal };
+  });
+}
+
+// ── FORMAT TANGGAL (handle teks Indonesia & ISO) ──
+function formatTanggal(str) {
+  if (!str) return '–';
+  // Cek apakah sudah dalam format teks Indonesia (misal: "Senin, 05 Januari 2026")
+  const hariID = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+  if (hariID.some(h => str.startsWith(h))) return str;
+  // Coba parse sebagai ISO (YYYY-MM-DD)
+  const d = new Date(str + 'T00:00:00');
+  if (!isNaN(d)) {
+    return d.toLocaleDateString('id-ID', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+  }
+  return str; // fallback ke teks asli
+}
+
+// ── BADGE AGENDA ──
+function agendaBadge(agenda) {
+  const a = (agenda || '').toUpperCase();
+  if (a.includes('AJUDIKASI')) return `<span class="agenda-badge badge-ajudikasi">${agenda}</span>`;
+  if (a.includes('MEDIASI'))   return `<span class="agenda-badge badge-mediasi">${agenda}</span>`;
+  if (a.includes('PUTUSAN'))   return `<span class="agenda-badge badge-putusan">${agenda}</span>`;
+  return `<span class="agenda-badge badge-lainnya">${agenda || '–'}</span>`;
+}
+
+// ── TAMPILKAN STATE LOADING ──
+function showLoading() {
+  document.getElementById('statsLabel').textContent = 'Memuat data…';
+  document.getElementById('cardGrid').innerHTML = `
+    <div class="state-box">
+      <div class="spinner"></div>
+      <p>Memuat jadwal sidang…</p>
+      <p class="state-sub">Mengambil data dari Google Sheets</p>
+    </div>`;
+}
+
+// ── TAMPILKAN STATE ERROR ──
+function showError(msg) {
+  document.getElementById('statsLabel').textContent = '⚠ Gagal memuat';
+  document.getElementById('cardGrid').innerHTML = `
+    <div class="state-box state-error">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+      </svg>
+      <p>Data jadwal gagal dimuat.</p>
+      <p class="state-sub">${msg || 'Pastikan Google Sheets sudah dipublikasikan.'}</p>
+      <button class="retry-btn" onclick="fetchSidangData()">🔄 Coba Lagi</button>
+    </div>`;
+}
+
+// ── UPDATE TIMESTAMP REFRESH ──
+function updateLastRefresh() {
+  const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('refreshInfo').textContent = `Data terakhir diperbarui: ${now} · Auto-refresh setiap ${AUTO_REFRESH_MINUTES} menit`;
+}
+
+// ── FETCH DATA DARI GOOGLE SHEETS ──
+async function fetchSidangData() {
+  showLoading();
+  try {
+    const res = await fetch(SHEET_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Server merespons dengan status ${res.status}`);
+
+    const text = await res.text();
+    if (!text || text.trim() === '') throw new Error('Data kosong dari Google Sheets');
+
+    const rows     = parseCSV(text);
+    const hdrIdx   = findHeaderRow(rows);
+
+    if (hdrIdx < 0) throw new Error('Header kolom tidak ditemukan di spreadsheet');
+
+    const headers = rows[hdrIdx].map(h => h.trim());
+    const rawData = rows.slice(hdrIdx + 1)
+      .map(row => mapRow(row, headers))
+      .filter(d => d.register && d.register !== ''); // abaikan baris tanpa nomor register
+
+    // Terapkan carry-forward tanggal
+    sidangData = propagateTanggal(rawData);
+
+    filterCards();
+    updateLastRefresh();
+  } catch (err) {
+    console.error('[Jadwal Sidang] Fetch error:', err);
+    showError(err.message);
+  }
+}
+
+// ── SET FILTER TAB ──
+function setFilter(val, btn) {
+  activeFilter = val;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+
+// ── RENDER KARTU (filter + search) ──
+function filterCards() {
+  const q    = document.getElementById('searchInput').value.toLowerCase().trim();
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+
+  const filtered = sidangData.filter(d => {
+    // Filter pencarian teks
+    const haystack = [d.register, d.pemohon, d.termohon, d.majelis,
+                      d.panitera, d.agenda, d.tanggal, d.mediator]
+      .map(v => (v || '').toLowerCase());
+    const matchSearch = !q || haystack.some(v => v.includes(q));
+
+    // Filter tab agenda (partial match, case-insensitive)
+    const matchFilter = activeFilter === 'all' ||
+      (d.agenda || '').toUpperCase().includes(activeFilter.toUpperCase());
+
+    return matchSearch && matchFilter;
+  });
+
+  // Update badge jumlah data
+  document.getElementById('statsLabel').textContent =
+    filtered.length === sidangData.length
+      ? `${sidangData.length} Jadwal Sidang`
+      : `${filtered.length} dari ${sidangData.length} Data`;
+
+  // Tampilkan state kosong
+  if (sidangData.length === 0) {
+    grid.innerHTML = `
+      <div class="state-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <p>Belum ada jadwal sidang.</p>
+        <p class="state-sub">Tambahkan data di Google Sheets untuk menampilkan jadwal.</p>
+      </div>`;
+    return;
+  }
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="state-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <p>Tidak ada data yang sesuai pencarian.</p>
+      </div>`;
+    return;
+  }
+
+  // Render kartu
+  filtered.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = `${Math.min(i * 0.04, 0.6)}s`;
+
+    // Format tanggal ringkas untuk footer kartu
+    const tanggalDisplay = formatTanggal(d.tanggal);
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-register">
+          <small>No. Register</small>
+          ${d.register}
+        </div>
+        ${agendaBadge(d.agenda)}
+      </div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="card-label">Pemohon</span>
+          <span class="card-value">${d.pemohon || '–'}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">Termohon</span>
+          <span class="card-value">${d.termohon || '–'}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">Panitera</span>
+          <span class="card-value">${d.panitera || '–'}</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-datetime">
+          📅 ${tanggalDisplay}
+          <span>·</span> 🕐 ${d.jam || '–'}
+        </div>
+        <div class="card-cta">Detail →</div>
+      </div>
+    `;
+    card.onclick = () => openModal(d);
+    grid.appendChild(card);
+  });
+}
+
+// ── BUKA MODAL DETAIL ──
+function openModal(d) {
+  document.getElementById('m-register').textContent       = d.register  || '–';
+  document.getElementById('m-agenda-header').textContent  = `Agenda: ${d.agenda || '–'}`;
+  document.getElementById('m-tanggal').textContent        = formatTanggal(d.tanggal);
+  document.getElementById('m-jam').textContent            = d.jam       || '–';
+  document.getElementById('m-agenda').textContent         = d.agenda    || '–';
+  document.getElementById('m-pemohon').textContent        = d.pemohon   || '–';
+  document.getElementById('m-termohon').textContent       = d.termohon  || '–';
+  document.getElementById('m-majelis').textContent        = d.majelis   || '–';
+  document.getElementById('m-mediator').textContent       = d.mediator  || '–';
+  document.getElementById('m-panitera').textContent       = d.panitera  || '–';
+  document.getElementById('m-catatan').textContent        = d.catatan   || '(Tidak ada catatan)';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+// ── INISIALISASI ──
+fetchSidangData();
+
+// Auto-refresh berkala
+if (AUTO_REFRESH_MINUTES > 0) {
+  setInterval(fetchSidangData, AUTO_REFRESH_MINUTES * 60 * 1000);
+}
+</script>
+</body>
+</html>
